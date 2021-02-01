@@ -4,7 +4,8 @@
 #' @param SSP SSP scenario
 #' @author David Chen
 #' @return magpie object of waste shares
-
+#' @importFrom dplyr select
+#' @importFrom tidyr unite spread
 
 calcWasteType <- function(weight="pop", SSP="SSP2"){
 
@@ -30,33 +31,36 @@ years <- as.data.frame(where(dimSums(tmp, dim=3, na.rm=T)==0)$false$`individual`
 years$year <- gsub("y", x=years$year, replacement="")
 colnames(years)[1] <- "region"
 tmp <- as.data.frame(tmp)
-colnames(tmp) <-  c("cell","region","year","type","value") 
+colnames(tmp) <-  c("cell","region","year","type","value")
 
 #only the years that have value
 tmp <- merge(tmp, years[c("region", "year")])
 tmp[which(is.na(tmp$value)),"value"] <- 0
 tmp<- select(tmp, -cell)
 
-tmp <- unite(tmp, reg_year, c("region","year")) %>% 
+tmp <- unite(tmp, reg_year, c("region","year")) %>%
   spread(key=type, value=value)
 
-df <- unite(gdp,col="reg_year", c(region, year)) %>% 
-  select(-c(cell,data1)) %>% 
-  inner_join(tmp, ., by="reg_year") 
+df <- unite(gdp,col="reg_year", c(region, year)) %>%
+  select(-c(cell,data1)) %>%
+  inner_join(tmp, ., by="reg_year")
 
 
-pop <- unite(pop,col="reg_year", c(region, year)) %>% 
+pop <- unite(pop,col="reg_year", c(region, year)) %>%
   select(-c(cell,data1))
-df<- inner_join(df, pop, by="reg_year") %>% 
+df<- inner_join(df, pop, by="reg_year") %>%
   filter(gdp<100000)
 
 # combined
-df[,"other"] <- df[,"rubber_leather"] + df[,"wood_waste"] + df[,"other"]  
-#df[,"other"] <- df[,"other"] + df[,"rubber_leather"]  
-WD <- DR_data(df[,2:7])
+df[,"other"] <- df[,"rubber_leather"] + df[,"wood_waste"] + df[,"other"]
+#df[,"other"] <- df[,"other"] + df[,"rubber_leather"]
+WD <- (df[,2:7])
 
+## TRANSFORM 0's and 1's to very small value
+WD<- (WD * (nrow(WD) - 1) + 1/ncol(WD))/nrow(WD)
 
-WD <- matrix(WD, ncol=6)
+WD <- as.matrix(WD, ncol=6)
+
 
 colnames(WD) <- c(1:ncol(WD))
 #WD[,c(1,2)] <- WD[ ,c(2,1)]
@@ -68,7 +72,7 @@ df$gdp <- log(df$gdp)
 df$pop <- length(df$pop)*(df$pop/sum(df$pop))
 
 if (weight== "pop") {
-  reg <- brm(WD|weights(pop) ~ gdp, data = df, family = 'dirichlet', inits="0", cores=4)  
+  reg <- brm(WD|weights(pop) ~ gdp, data = df, family = 'dirichlet', inits="0", cores=4)
 }
 
 else if (weight == "none") {
@@ -89,7 +93,7 @@ colnames(df1) <- gsub(".5","5",colnames(df1))
 
 df2 <- gather(df1, key="type",value = "value", 4:21)
 x <- as.magpie(df2)
-getSets(x) <- c("Region","Year","scenario","bounds","type")    
+getSets(x) <- c("Region","Year","scenario","bounds","type")
 
 x <- dimOrder(x, c(2,1,3))
 

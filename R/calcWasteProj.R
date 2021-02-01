@@ -3,11 +3,9 @@
 #' @param pc per capita (kg/capita) or total (Mt)
 #' @param SSP SSP scenario
 #' @author David Chen
-#' @return magpie object of waste projections by treatment and type 
+#' @return magpie object of waste projections by treatment and type
 
-#'#' @importFrom tidyverse spread select inner_join filter
-#'#' @importFrom tidyr unite
-#'#' @importFrom DirichletReg DR_data DirichReg predict
+
 calcWasteProj <-function(pc=TRUE, SSP="SSP2"){
 
 trt <- calcOutput("WasteTrt", aggregate=FALSE)
@@ -56,7 +54,7 @@ if (pc==TRUE){
   getNames(pop) <- gsub("pop_","",getNames(pop))
   pop<- pop[,,SSP]
   total <- (total*10^9)/(pop*10^6)   #convert to kilos
- 
+
    weight=pop[,,SSP]
   unit="kg/cap"
 }
