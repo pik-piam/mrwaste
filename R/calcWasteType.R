@@ -68,7 +68,7 @@ colnames(WD) <- c(1:ncol(WD))
 df$WD <- with(df,cbind(WD))
 #log scale
 df$gdp <- log(df$gdp)
-
+#pop weighting so the total number of pop is equal to the n observed
 df$pop <- length(df$pop)*(df$pop/sum(df$pop))
 
 if (weight== "pop") {

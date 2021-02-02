@@ -1,21 +1,17 @@
 #' @title calcWasteDirTrt
 #' @description Calculates shares of waste treatments by type based on Dirichlet regression on gdp using WhataWaste2.0 data
 #' note that each type is independent - treatments for each type all sum to 1
-#' @param weight population weights or "none" 
+#' @param weight population weights or "none"
 #' @param SSP SSP scenario
 #' @author David Chen
 #' @return magpie object of waste treatment by type shares
-#' @importFrom DirichletReg DirichReg DR_data
-
-
-
 
 calcWasteTrt <- function(weight="pop", SSP="SSP2"){
   rstan_options(auto_write = TRUE)
   options(mc.cores = 4)
-  
+
 RegTrt <-function(type, weight="pop"){
-    
+
 x <- calcOutput("NlWasteDistrib", aggregate=F)
 x <- dimOrder(x, perm=c(2,1))
 #gdp
@@ -33,32 +29,35 @@ prepDirReg <- function(input, remove){
   #specify type and remove
   #sum up wood and paper, and rubber and other
     x[,,"other"] <- x[,,"rubber"] + x[,,"wood"] + x[,,"other"]
-  a<-as.data.frame(x[,,input]) %>% 
-    select(-1) %>% 
-    na.omit() 
+  a<-as.data.frame(x[,,input]) %>%
+    select(-1) %>%
+    na.omit()
   #some optim values (have small negative values solved, round and then  make the others 0 for now,,get closed anwyays)
   a[,5] <- round(a[,5],4)
-  negs <- which(a[,5] <0) 
+  negs <- which(a[,5] <0)
   a[negs,5] <- 0
-  a <- spread(a, key=Data2, value=Value) %>% 
-    select(-c(3, remove)) %>% 
+  a <- spread(a, key=Data2, value=Value) %>%
+    select(-c(3, remove)) %>%
     unite(col="reg_year", c(Region, Year))
-  
-  a <- unite(gdp,col="reg_year", c(region, year)) %>% 
-    select(-c(cell,data1)) %>% 
-    inner_join(a, ., by="reg_year") 
-  
-  a <- unite(pop,col="reg_year", c(region, year)) %>% 
-    select(-c(cell,data1)) %>% 
-    inner_join(a, ., by="reg_year") %>% 
+
+  a <- unite(gdp,col="reg_year", c(region, year)) %>%
+    select(-c(cell,data1)) %>%
+    inner_join(a, ., by="reg_year")
+
+  a <- unite(pop,col="reg_year", c(region, year)) %>%
+    select(-c(cell,data1)) %>%
+    inner_join(a, ., by="reg_year") %>%
     filter(gdp < 90000)
-  
-  WD1 <- DR_data(a[,2:(ncol(a)-2)])
-  WD <- WD1[-which(is.na(rowSums(WD1))),]
-  WD <- DR_data(WD)
-  a <- a[-which(is.na(rowSums(WD1))),]
+
+
+  WD <- a[,2:(ncol(a)-2)]/rowSums(a[,2:(ncol(a)-2)])
+  WD <- (WD * (nrow(WD) - 1) + 1/ncol(WD))/nrow(WD)
+  WD <- WD[-which(is.na(rowSums(WD))),]
+  WD <- as.matrix(WD, ncol=4)
+
+  a <- a[-which(is.na(rowSums(WD))),]
   a$pop <- length(a$pop)*(a$pop/sum(a$pop))
-  
+
   return(list(a,WD))
 }
 
@@ -168,7 +167,7 @@ df <- df[,-c(1,5)]
 colnames(df)[3] <- "scenario"
 df <- gather(df, key="trt",value = "value", 4:93)
 x <- as.magpie(df)
-getSets(x) <- c("region","year","scenario", "type", "bounds","trt")     
+getSets(x) <- c("region","year","scenario", "type", "bounds","trt")
 
 x <- dimOrder(x, c(2,4,3,1))
 
