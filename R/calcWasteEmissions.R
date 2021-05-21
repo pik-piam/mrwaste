@@ -13,7 +13,6 @@
 calcWasteEmissions <- function(treatment="swds"){
 
   wastedistrib <- calcOutput("WasteProj", pc=FALSE, aggregate=FALSE)
-  wastedistrib <- dimOrder(wastedistrib,perm=c(4,1,2,3))
 
   if (treatment == "swds") {
      #CH4 from SWDS emissions from IPCC vol. 5 ch. 3
@@ -190,10 +189,6 @@ out<- ghg_compost
 #CH4: 0 default emissions factor, open burning unknown/not assessed
 
 #N2O: default of 55g/tMSW incinerated for all waste
-
-
-
-
 
 
   incineration<- wastedistrib[,,c("paper","plastic","organic")][,,"incineration"]

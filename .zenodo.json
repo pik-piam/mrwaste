@@ -1,0 +1,10 @@
+{
+  "title": "mrwaste: Analysis and Projection of Municipal Solid Waste",
+  "version": "0.4.0",
+  "description": "<p>Reads in waste data from What a Waste 2.0 and uses brms package to create future regressions based on GDP.<\/p>",
+  "creators": [
+    {
+      "name": "Chen, David Meng-Chuen"
+    }
+  ]
+}

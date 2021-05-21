@@ -1,6 +1,6 @@
 #' @title calcWasteProj
 #' @description Calculates all waste projections, multiplies shares properly by pc or total generation quantities
-#' @param pc per capita (kg/capita) or total (Mt)
+#' @param pc per capita (kg/capita) or total (Mt) wet weight
 #' @param SSP SSP scenario
 #' @author David Chen
 #' @return magpie object of waste projections by treatment and type
@@ -8,8 +8,8 @@
 
 calcWasteProj <-function(pc=TRUE, SSP="SSP2"){
 
-trt <- calcOutput("WasteTrt", aggregate=FALSE)
-typ <- calcOutput("WasteType", aggregate=FALSE)
+trt <- calcOutput("WasteTrt", SSP=SSP, aggregate=FALSE)
+typ <- calcOutput("WasteType", SSP= SSP, aggregate=FALSE)
 
 #trt shares are per treatment type, following makes them sum up to 1 overall
 shares <- trt
@@ -21,9 +21,7 @@ shares[,,"metal"] <- trt[,,"metal"]*typ[,,"metal"]
 shares[,,"other"] <- trt[,,"other"]*typ[,,"other"]
 
 gen <-  calcOutput("WasteGen", form="LogLog", aggregate=FALSE, pc=FALSE)[,,"SSP2"]
-getNames(gen) <- c("Q25.SSP2","Estimate.SSP2","Q975.SSP2")
-# total <- gen*shares
-# total <- dimOrder(total,c(2,3,1))
+
 
 #calibrate quantities based on shares vs nl
 nl <- calcOutput("NlWasteDistrib", aggregate=F)
@@ -31,7 +29,6 @@ nl[,,"other"] <- nl[,,"other"] + nl[,,"wood"] + nl[,,"rubber"]
 nl <- nl[,,c("wood","rubber"), invert=T]
 nl <- round(nl,4)
 nl[nl<0] <- 0
-nl <- dimOrder(nl, c(2,1))
 
 ##
 shares1 <- time_interpolate(shares, interpolated_year= getYears(nl), extrapolation_type = "linear")
@@ -46,7 +43,7 @@ shares[regions,,] <- collapseNames(setYears(c_factor,NULL)) * shares[regions,,]
 shares[regions,,] <- (1/dimSums(shares[regions,,"Estimate"],dim=3))*shares[regions,,]
 
 total <- gen*shares
-total<-dimOrder(total, c(3,4,1,2))
+total<-dimOrder(total, c(3,4,2,1))
 
 
 if (pc==TRUE){

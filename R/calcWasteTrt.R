@@ -4,16 +4,25 @@
 #' @param weight population weights or "none"
 #' @param SSP SSP scenario
 #' @author David Chen
-#' @return magpie object of waste treatment by type shares
+#' @return magpie object of waste treatment by type share
+#' @export
+#' @importFrom tidyr gather spread unite
+#' @importFrom dplyr select inner_join filter
+#' @importFrom magclass time_interpolate as.data.frame
+#' @importFrom brms brm
+#' @importFrom magrittr %>%
+#' @importFrom rlang .data
+#' @importFrom stats na.omit fitted
+#' @importFrom tidyselect contains
+
 
 calcWasteTrt <- function(weight="pop", SSP="SSP2"){
-  rstan_options(auto_write = TRUE)
+ # rstan_options(auto_write = TRUE)
   options(mc.cores = 4)
 
 RegTrt <-function(type, weight="pop"){
 
 x <- calcOutput("NlWasteDistrib", aggregate=F)
-x <- dimOrder(x, perm=c(2,1))
 #gdp
 gdppc <- calcOutput("GDPpc",aggregate=F)
 gdp<- time_interpolate(gdppc, interpolated_year= getYears(x) , extrapolation_type = "linear")
@@ -28,34 +37,36 @@ colnames(pop) <- c( "cell", "region", "year", "data1", "pop")
 prepDirReg <- function(input, remove){
   #specify type and remove
   #sum up wood and paper, and rubber and other
-    x[,,"other"] <- x[,,"rubber"] + x[,,"wood"] + x[,,"other"]
-  a<-as.data.frame(x[,,input]) %>%
-    select(-1) %>%
-    na.omit()
+  x[,,"other"] <- x[,,"rubber"] + x[,,"wood"] + x[,,"other"]
+  a<-as.data.frame(x[,,input])
+  a<- a[,-1]
+  a<-  na.omit(a)
   #some optim values (have small negative values solved, round and then  make the others 0 for now,,get closed anwyays)
   a[,5] <- round(a[,5],4)
   negs <- which(a[,5] <0)
   a[negs,5] <- 0
-  a <- spread(a, key=Data2, value=Value) %>%
+  a <- spread(a, key="Data2", value="Value") %>%
     select(-c(3, remove)) %>%
-    unite(col="reg_year", c(Region, Year))
+    unite(col="reg_year", c("Region", "Year"))
 
-  a <- unite(gdp,col="reg_year", c(region, year)) %>%
-    select(-c(cell,data1)) %>%
-    inner_join(a, ., by="reg_year")
+  gdp <- unite(gdp,col="reg_year", c("region", "year")) %>%
+    select(-c("cell","data1"))
 
-  a <- unite(pop,col="reg_year", c(region, year)) %>%
-    select(-c(cell,data1)) %>%
-    inner_join(a, ., by="reg_year") %>%
-    filter(gdp < 90000)
+  a <-  inner_join(a, gdp, by="reg_year")
+
+  pop <- unite(pop,col="reg_year", c("region", "year")) %>%
+    select(-c("cell","data1"))
+  a <-  inner_join(a, pop, by="reg_year")
+a <-    filter(a, .data$gdp < 90000)
 
 
   WD <- a[,2:(ncol(a)-2)]/rowSums(a[,2:(ncol(a)-2)])
   WD <- (WD * (nrow(WD) - 1) + 1/ncol(WD))/nrow(WD)
-  WD <- WD[-which(is.na(rowSums(WD))),]
+ rm <- which(is.na(rowSums(WD)))
+   WD <- WD[-rm,]
   WD <- as.matrix(WD, ncol=4)
 
-  a <- a[-which(is.na(rowSums(WD))),]
+  a <- a[-rm,]
   a$pop <- length(a$pop)*(a$pop/sum(a$pop))
 
   return(list(a,WD))
@@ -71,9 +82,9 @@ plastic<- prepDirReg(input="plastic", remove=c("compost"))
 results_list <- c(organic,glass,metal,other,paper,plastic)
 names <- c("organic","glass","metal","other","paper","plastic")
 
-WD1 <- as.list(results_list[seq(from=2,to=20,by=2)] )
+WD1 <- as.list(results_list[seq(from=2,to=12,by=2)] )
 names(WD1) <- names
-a1 <- as.list(results_list[seq(from=1,to=20,by=2)] )
+a1 <- as.list(results_list[seq(from=1,to=12,by=2)] )
 names(a1) <- names
 
 WD <- WD1[[type]]
@@ -167,6 +178,7 @@ df <- df[,-c(1,5)]
 colnames(df)[3] <- "scenario"
 df <- gather(df, key="trt",value = "value", 4:93)
 x <- as.magpie(df)
+getNames(x) <- gsub("_","\\.", getNames(x))
 getSets(x) <- c("region","year","scenario", "type", "bounds","trt")
 
 x <- dimOrder(x, c(2,4,3,1))

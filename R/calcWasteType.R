@@ -4,14 +4,21 @@
 #' @param SSP SSP scenario
 #' @author David Chen
 #' @return magpie object of waste shares
-#' @importFrom dplyr select
-#' @importFrom tidyr unite spread
+#'
+#' @export
+#' @importFrom dplyr select inner_join filter
+#' @importFrom tidyr unite spread gather
+#' @importFrom rstan rstan_options
+#' @importFrom brms brm
+#' @importFrom magclass as.data.frame
+#' @importFrom rlang .data
+#' @importFrom stats fitted
+
 
 calcWasteType <- function(weight="pop", SSP="SSP2"){
 
-rstan_options(auto_write = TRUE)
+#rstan_options(auto_write = TRUE)
 options(mc.cores = 4)
-
 
 tmp <- readSource("Waste", subtype="Composition")
 gdppc <- calcOutput("GDPpc",aggregate=F)
@@ -24,9 +31,13 @@ pop<- time_interpolate(pop, interpolated_year= getYears(tmp) , extrapolation_typ
 pop <- as.data.frame(pop[,,"pop_SSP2"])
 colnames(pop) <- c( "cell", "region", "year", "data1", "pop")
 
+
+tmp[,,"other"] <- tmp[,,"rubber_leather"] + tmp[,,"wood_waste"] + tmp[,,"other"]
+tmp <- tmp[,,c("rubber_leather","wood_waste"), inv=T]
+
 #closure
 tmp <- tmp/dimSums(tmp, na.rm=T, dim=3)
-#years where data exists
+#regions where data exists
 years <- as.data.frame(where(dimSums(tmp, dim=3, na.rm=T)==0)$false$`individual`)
 years$year <- gsub("y", x=years$year, replacement="")
 colnames(years)[1] <- "region"
@@ -36,32 +47,28 @@ colnames(tmp) <-  c("cell","region","year","type","value")
 #only the years that have value
 tmp <- merge(tmp, years[c("region", "year")])
 tmp[which(is.na(tmp$value)),"value"] <- 0
-tmp<- select(tmp, -cell)
+tmp<- tmp[,-3]
 
-tmp <- unite(tmp, reg_year, c("region","year")) %>%
-  spread(key=type, value=value)
+tmp <- unite(tmp, "reg_year", c("region","year"))
+tmp<-  spread(tmp, key="type", value="value")
 
-df <- unite(gdp,col="reg_year", c(region, year)) %>%
-  select(-c(cell,data1)) %>%
-  inner_join(tmp, ., by="reg_year")
+df <- unite(gdp,col="reg_year", c("region", "year"))
+df <-   select(df, -c("cell","data1"))
+df <-   inner_join(tmp, df,by="reg_year")
 
 
-pop <- unite(pop,col="reg_year", c(region, year)) %>%
-  select(-c(cell,data1))
-df<- inner_join(df, pop, by="reg_year") %>%
-  filter(gdp<100000)
+pop <- unite(pop,col="reg_year", c("region", "year"))
+pop <-  select(pop, -c("cell","data1"))
+df<- inner_join(df, pop, by="reg_year")
+df <-  filter(df, .data$gdp<100000)
 
 # combined
-df[,"other"] <- df[,"rubber_leather"] + df[,"wood_waste"] + df[,"other"]
 #df[,"other"] <- df[,"other"] + df[,"rubber_leather"]
 WD <- (df[,2:7])
 
 ## TRANSFORM 0's and 1's to very small value
 WD<- (WD * (nrow(WD) - 1) + 1/ncol(WD))/nrow(WD)
-
 WD <- as.matrix(WD, ncol=6)
-
-
 colnames(WD) <- c(1:ncol(WD))
 #WD[,c(1,2)] <- WD[ ,c(2,1)]
 
@@ -80,7 +87,7 @@ else if (weight == "none") {
 }
 
 gdppc <- calcOutput("GDPpc", aggregate=F)[,,SSP]
-gdppc <- as.data.frame(gdppc)
+gdppc <- magclass::as.data.frame(gdppc)
 gdppc$Value <- log(gdppc$Value)
 
 tmp <- fitted(reg, newdata=data.frame(gdp=gdppc$Value))
@@ -93,9 +100,11 @@ colnames(df1) <- gsub(".5","5",colnames(df1))
 
 df2 <- gather(df1, key="type",value = "value", 4:21)
 x <- as.magpie(df2)
+getNames(x) <- gsub("_", "\\.", getNames(x))
+
 getSets(x) <- c("Region","Year","scenario","bounds","type")
 
-x <- dimOrder(x, c(2,1,3))
+x <- dimOrder(x, c(3,2,1))
 
 return(list(
   x=x,

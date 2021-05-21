@@ -1,11 +1,11 @@
 #' @title calcNlWasteDistrib
-#' @description 
-#' non-linear optimization distributes waste by composition type to disposal type. 
+#' @description
+#' non-linear optimization distributes waste by composition type to disposal type.
 #' returns magpie object, share of total disposal
 #' @return Magpie object of waste types to waste distribution,  share
 #' @author David Chen
 #' @examples
-#' 
+#'
 #' \dontrun{ a <- calcOutput(type="NlWasteDistrib")
 #' }
 #' @importFrom alabama auglag
@@ -34,9 +34,9 @@ nlwaste <- function(iso,comp_shr,treat_shr){
   treatment$Value[which(is.na(treatment$Value))] <- 0
   treatment$Value <- treatment$Value/sum(treatment$Value)
   rhs <- as.matrix(outer(treatment$Value, type$Value))
-  rhs1 <- as.vector(t(rhs))  
+  rhs1 <- as.vector(t(rhs))
 
-#obj fn  
+#obj fn
 f=function(x)((x[1]-1)^2+(x[2]-rhs1[2])^2+(x[3]-rhs1[3])^2+(x[4]-rhs1[4])^2+(x[5]-rhs1[5])^2+(x[6]-rhs1[6])^2+(x[7]-rhs1[7])^2+(x[8]-rhs1[8])^2+
                (x[9]-rhs1[9])^2+(x[10]-rhs1[10])^2+(x[11]-rhs1[11])^2+(x[12]-rhs1[12])^2+(x[13]-rhs1[13])^2+(x[14]-rhs1[14])^2+(x[15]-rhs1[15])^2+(x[16]-rhs1[16])^2+
                (x[17]-rhs1[17])^2+(x[18]-rhs1[18])^2+(x[19]-rhs1[19])^2+(x[20]-rhs1[20])^2+(x[21]-rhs1[21])^2+(x[22]-rhs1[22])^2+(x[23]-rhs1[23])^2+(x[24]-rhs1[24])^2+
@@ -142,12 +142,12 @@ names <- list(c("compost", "recyc", "incineration","landfills","dumps"),
               c("organic","glass","metal","other","paper","plastic","rubber","wood"),
               v)
 
-pars <- sapply(models,`[`,1) 
+pars <- sapply(models,`[`,1)
 pars <- lapply(pars, matrix,nrow=5, ncol=8, byrow=T)
 pars <- simplify2array(pars)
 dimnames(pars) <- names
 pars <- as.data.frame.table(pars)
-colnames(pars) <- c("treatment", "type","region","value")
+colnames(pars) <- c("treatment", "type","country","value")
 
 
 years <-readSource("Waste", subtype="Generation", convert=F)
@@ -156,10 +156,11 @@ years <-as.data.frame(where(is.na(years))$false$`individual`)
 years <- years[,c(1:2)]
 pars <- merge(pars, years)
 
-pars <- pars[,c(1,5,2,3,4)]
+pars <- pars[,c(1,5,3,2,4)]
 
 
 x <- as.magpie(pars, spatial=1, temporal=2, tidy=TRUE)
+x <- round(x, 4)
 
 return(list(
   x=x,
@@ -168,5 +169,5 @@ return(list(
   description="share of waste generation",
   isocountries=FALSE
 ))
-  
+
   }

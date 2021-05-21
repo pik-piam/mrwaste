@@ -1,18 +1,19 @@
 #' Read Janbeck 2011 Coastal Population data, for Ocean Plastic input
-#' 
+#'
 #' Read-in a xlsx file as magclass object
 #' kg/cap
-#' 
-#' @return magpie object of coastal population by country, 50km buffer around coastline, 
+#'
+#' @return magpie object of coastal population by country, 50km buffer around coastline,
 #' keeping percentage same in future
 #' @author David Chen
 #' @seealso \code{\link{readSource}}
 #' @examples
-#' 
+#'
 #' \dontrun{ a <- readSource(type="CoastalPop")
 #' }
-#' 
+#'
 #' @importFrom magclass as.magpie
+#' @importFrom utils read.csv
 
 readCoastalPop <- function() {
   #### x <- read.csv("C:/PIK/inputdata/sources/CoastalPop/JanbeckOceanPlastic.csv")
