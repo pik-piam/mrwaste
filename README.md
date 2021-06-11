@@ -1,8 +1,8 @@
 # Analysis and Projection of Municipal Solid Waste
 
-R package **mrwaste**, version **0.4.0**
+R package **mrwaste**, version **0.4.1**
 
-[![CRAN status](https://www.r-pkg.org/badges/version/mrwaste)](https://cran.r-project.org/package=mrwaste)   [![R build status](https://github.com/caviddhen/mrwaste/workflows/check/badge.svg)](https://github.com/caviddhen/mrwaste/actions) [![codecov](https://codecov.io/gh/caviddhen/mrwaste/branch/master/graph/badge.svg)](https://codecov.io/gh/caviddhen/mrwaste)
+[![CRAN status](https://www.r-pkg.org/badges/version/mrwaste)](https://cran.r-project.org/package=mrwaste)   [![R build status](https://github.com/pik-piam/mrwaste/workflows/check/badge.svg)](https://github.com/pik-piam/mrwaste/actions) [![codecov](https://codecov.io/gh/pik-piam/mrwaste/branch/master/graph/badge.svg)](https://codecov.io/gh/pik-piam/mrwaste)
 
 ## Purpose and Functionality
 
@@ -38,8 +38,7 @@ In case of questions / problems please contact David Meng-Chuen Chen <david.chen
 
 To cite package **mrwaste** in publications use:
 
-Chen D (2021). _mrwaste: Analysis and Projection of Municipal Solid Waste_. R
-package version 0.4.0.
+Chen D (2021). _mrwaste: Analysis and Projection of Municipal Solid Waste_. R package version 0.4.1.
 
 A BibTeX entry for LaTeX users is
 
@@ -48,7 +47,7 @@ A BibTeX entry for LaTeX users is
   title = {mrwaste: Analysis and Projection of Municipal Solid Waste},
   author = {David Meng-Chuen Chen},
   year = {2021},
-  note = {R package version 0.4.0},
+  note = {R package version 0.4.1},
 }
 ```
 

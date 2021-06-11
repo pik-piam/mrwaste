@@ -1,9 +1,9 @@
 Package: mrwaste
 Type: Package
 Title: Analysis and Projection of Municipal Solid Waste
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: c(person("David Meng-Chuen", "Chen", email = "david.chen@pik-potsdam.de", role = c("aut","cre")))
-Date: 2021-05-21
+Date: 2021-06-11
 Description: Reads in waste data from What a Waste 2.0 and uses brms package to create future regressions based on GDP.
 Depends:
     R(>= 2.10.0),

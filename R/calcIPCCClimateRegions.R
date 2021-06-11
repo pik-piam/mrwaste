@@ -1,18 +1,18 @@
 #' @title calcClimateRegionsIPCC
 #' @description calculates IPCC Climate Regions (IPCC2006 ch.4.3) based on t, ppt, pet from LPJml. elevation dimension not included for tropical montane class
-#' 
+#'
 #' @param landusetypes all or only one (to save computation memory)
 #' @param cellular FALSE for country level, TRUE for cells
-#' @param convert fills missing countries for country level aggregation with warm temperate moist (mostly small island nations) 
-#' @param yearly FALSE for normal magpie 5 year time spans, TRUE for yearly 
-#' 
-#' @return Country or cellular magpie object with matrix of fraction of each climate region by country or cell 
+#' @param convert fills missing countries for country level aggregation with warm temperate moist (mostly small island nations)
+#' @param yearly FALSE for normal magpie 5 year time spans, TRUE for yearly
+#'
+#' @return Country or cellular magpie object with matrix of fraction of each climate region by country or cell
 #' @author David Chen
 #' @seealso
 #' \code{\link{readLPJml_rev21}}
 #' @examples
-#' 
-#' \dontrun{ 
+#'
+#' \dontrun{
 #' calcOutput("IPCCClimateRegions")
 #' }
 #' @importFrom SPEI thornthwaite
@@ -31,7 +31,7 @@ lat<-pe<-p
 lat[,,]<-NA
 pe[,,]<-NA
 lat<-p[,1,1]
-lat[,,]<-as.numeric(toolMappingFile(type = "cell",name = "CountryToCellMapping.csv",readcsv = TRUE)$lat)
+lat[, , ] <- as.numeric(toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")$lat)
 lat<-setNames(setYears(lat,NULL),NULL)
 tmp<-t
 tmp<-aperm(tmp,c(3,2,1))
@@ -95,14 +95,14 @@ if (cellular==TRUE){
 }
 
 else if (cellular==FALSE){
-  CountryToCell  <- toolMappingFile(type="cell",name = "CountryToCellMapping.csv",readcsv = TRUE)
-  
+  CountryToCell <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
+
   if (landusetypes=="all"){
       landuse<-calcOutput("LanduseInitialisation",cellular=TRUE,aggregate=FALSE)
     }
   else if (landusetypes!="all"){
     landuse<-calcOutput("LanduseInitialisation",cellular=TRUE,aggregate=FALSE)[,,landusetypes]
-  }  
+  }
 #cell to country aggregation
 landuse<-time_interpolate(landuse, interpolated_year = getYears(ratio),extrapolation_type = "constant")
 landuse_sum<-dimSums(landuse,dim=3)
@@ -115,7 +115,7 @@ if (convert==TRUE){
   out[missing,,"warm_temp_moist"] <-1
   }
 }
-      
+
 if (yearly==FALSE){
   past<-findset("past")
   out <- out[,past,]
