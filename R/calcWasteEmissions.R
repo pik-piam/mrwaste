@@ -212,6 +212,3 @@ out<- ghg_compost
     unit="Mt Co2eq",
     description="emissions from waste"))
 }
-
-
-
