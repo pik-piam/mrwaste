@@ -68,4 +68,3 @@ return(list(
   unit=unit,
   description="total waste generation"))
 }
-

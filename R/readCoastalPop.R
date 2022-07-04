@@ -47,5 +47,3 @@ x <- as.magpie(x, spatial=1, temporal=2)
 
 return(x)
 }
-
-

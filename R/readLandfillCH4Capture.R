@@ -21,5 +21,3 @@ a <- as.magpie(a)
 
 return(a)
 }
-
-
