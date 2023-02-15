@@ -1,8 +1,8 @@
 # Analysis and Projection of Municipal Solid Waste
 
-R package **mrwaste**, version **0.4.2**
+R package **mrwaste**, version **0.4.3**
 
-[![CRAN status](https://www.r-pkg.org/badges/version/mrwaste)](https://cran.r-project.org/package=mrwaste)  [![R build status](https://github.com/pik-piam/mrwaste/workflows/check/badge.svg)](https://github.com/pik-piam/mrwaste/actions) [![codecov](https://codecov.io/gh/pik-piam/mrwaste/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/mrwaste) [![r-universe](https://pik-piam.r-universe.dev/badges/mrwaste)](https://pik-piam.r-universe.dev/ui#builds)
+[![CRAN status](https://www.r-pkg.org/badges/version/mrwaste)](https://cran.r-project.org/package=mrwaste)  [![R build status](https://github.com/pik-piam/mrwaste/workflows/check/badge.svg)](https://github.com/pik-piam/mrwaste/actions) [![codecov](https://codecov.io/gh/pik-piam/mrwaste/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/mrwaste) [![r-universe](https://pik-piam.r-universe.dev/badges/mrwaste)](https://pik-piam.r-universe.dev/builds)
 
 ## Purpose and Functionality
 
@@ -38,7 +38,7 @@ In case of questions / problems please contact David Meng-Chuen Chen <david.chen
 
 To cite package **mrwaste** in publications use:
 
-Chen D (2022). _mrwaste: Analysis and Projection of Municipal Solid Waste_. R package version 0.4.2.
+Chen D (2023). _mrwaste: Analysis and Projection of Municipal Solid Waste_. R package version 0.4.3.
 
 A BibTeX entry for LaTeX users is
 
@@ -46,7 +46,7 @@ A BibTeX entry for LaTeX users is
 @Manual{,
   title = {mrwaste: Analysis and Projection of Municipal Solid Waste},
   author = {David Meng-Chuen Chen},
-  year = {2022},
-  note = {R package version 0.4.2},
+  year = {2023},
+  note = {R package version 0.4.3},
 }
 ```

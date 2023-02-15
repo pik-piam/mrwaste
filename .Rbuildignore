@@ -7,3 +7,6 @@
 ^.*\.zenodo.json$
 ^\.pre-commit-config\.yaml$
 ^workflow$
+^Makefile$
+^.lintr$
+^tests/.lintr$

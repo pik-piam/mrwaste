@@ -9,8 +9,9 @@
 
 
 calcWasteGen <- function(pc=TRUE, form="LogLog"){
-  
-gdppc <- calcOutput("GDPpc",aggregate=F)[,,c("SSP1", "SSP2", "SSP3", "SSP4", "SSP5")]
+
+gdppc <-calcOutput("GDPpc", scenario = "SSPs", naming = "scenario", aggregate = FALSE)
+
 
 if(form=="LogLog"){
   pred <- 0.37*log(gdppc) + 2.16
@@ -19,7 +20,7 @@ if(form=="LogLog"){
   predQ25 <- add_dimension(predQ25, dim=3.2, add="new", nm="Q25")
   predQ975 <- 0.41*log(gdppc) + 2.56
   predQ975 <- add_dimension(predQ975, dim=3.2, add="new", nm="Q975")
-  
+
   pred<-mbind(pred,predQ25, predQ975)
   pred <- exp(pred)
 }
@@ -30,11 +31,11 @@ if(form=="lm"){
 
 if(form=="MM"){
 #based on MM function, bayesian process, pop-weighted
-pred <- (1274.45 * gdppc)/(61542.95 + gdppc) + 92.15 
+pred <- (1274.45 * gdppc)/(61542.95 + gdppc) + 92.15
 }
 else if (form=="MM2"){
 #based on MM2 function, bayesian process, pop-weighted
-pred <- (927.55 * (gdppc^2))/(38358.16^2 + gdppc^2) + 163.55 
+pred <- (927.55 * (gdppc^2))/(38358.16^2 + gdppc^2) + 163.55
 }
 
 #multiplicative calibration
@@ -51,9 +52,9 @@ if(pc == TRUE) {
   x = pred
   weight=pop
   unit="kg/cap"
-} 
+}
 else {
-  waste_totals <- collapseNames((pred*pop)/1000) 
+  waste_totals <- collapseNames((pred*pop)/1000)
   #1000 converts from million kg to millions of tons
   x<- waste_totals
   weight=NULL
