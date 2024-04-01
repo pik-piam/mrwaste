@@ -1,36 +1,38 @@
-Package: mrwaste
 Type: Package
+Package: mrwaste
 Title: Analysis and Projection of Municipal Solid Waste
 Version: 0.4.3
-Authors@R: c(person("David Meng-Chuen", "Chen", email = "david.chen@pik-potsdam.de", role = c("aut","cre")))
 Date: 2023-02-15
-Description: Reads in waste data from What a Waste 2.0 and uses brms package to create future regressions based on GDP.
+Authors@R: 
+    person("David Meng-Chuen", "Chen", , "david.chen@pik-potsdam.de", role = c("aut", "cre"))
+Description: Reads in waste data from What a Waste 2.0 and uses brms
+    package to create future regressions based on GDP.
+License: LGPL-3
 Depends:
-    R(>= 2.10.0),
-    magclass(>= 3.17),
-    madrat(>= 1.30),
-    mrcommons  
+    R (>= 2.10.0),
+    madrat (>= 1.30),
+    magclass (>= 3.17),
+    mrcommons
 Imports:
-    magpiesets,
-    methods,
-    mstools,
-    nonparaeff,
-    reshape2,
-    mip, 
     SPEI,
     alabama,
     brms,
     dplyr,
+    magpiesets,
+    magrittr,
+    methods,
+    mip,
+    mstools,
+    nonparaeff,
     readxl,
+    reshape2,
+    rlang,
     rstan,
     tidyr,
-    magrittr,
     tidyselect,
-    utils,
-    rlang
-License: LGPL-3
-Encoding: UTF-8
-LazyData: true
+    utils
 Suggests: 
     covr
+Encoding: UTF-8
+LazyData: true
 RoxygenNote: 7.1.2
