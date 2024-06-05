@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it using the metadata from this file.
+type: software
+title: 'mrwaste: Analysis and Projection of Municipal Solid Waste'
+version: 0.4.4
+date-released: '2024-06-05'
+abstract: Reads in waste data from What a Waste 2.0 and uses brms package to create
+  future regressions based on GDP.
+authors:
+- family-names: Chen
+  given-names: David Meng-Chuen
+  email: david.chen@pik-potsdam.de
+license: LGPL-3.0
+

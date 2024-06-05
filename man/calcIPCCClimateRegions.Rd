@@ -32,9 +32,6 @@ calculates IPCC Climate Regions (IPCC2006 ch.4.3) based on t, ppt, pet from LPJm
 calcOutput("IPCCClimateRegions")
 }
 }
-\seealso{
-\code{\link{readLPJml_rev21}}
-}
 \author{
 David Chen
 }

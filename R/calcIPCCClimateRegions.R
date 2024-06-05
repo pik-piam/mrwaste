@@ -8,8 +8,6 @@
 #'
 #' @return Country or cellular magpie object with matrix of fraction of each climate region by country or cell
 #' @author David Chen
-#' @seealso
-#' \code{\link{readLPJml_rev21}}
 #' @examples
 #'
 #' \dontrun{
@@ -17,7 +15,7 @@
 #' }
 #' @importFrom SPEI thornthwaite
 #' @importFrom magpiesets findset
-#' @importFrom mrcommons toolCell2isoCell
+#' @importFrom mstools toolCell2isoCell
 
 
 calcIPCCClimateRegions<-function(landusetypes="all", cellular=FALSE, yearly=FALSE, convert=TRUE){

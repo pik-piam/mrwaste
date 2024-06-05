@@ -1,12 +1,13 @@
 # Analysis and Projection of Municipal Solid Waste
 
-R package **mrwaste**, version **0.4.3**
+R package **mrwaste**, version **0.4.4**
 
 [![CRAN status](https://www.r-pkg.org/badges/version/mrwaste)](https://cran.r-project.org/package=mrwaste)  [![R build status](https://github.com/pik-piam/mrwaste/workflows/check/badge.svg)](https://github.com/pik-piam/mrwaste/actions) [![codecov](https://codecov.io/gh/pik-piam/mrwaste/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/mrwaste) [![r-universe](https://pik-piam.r-universe.dev/badges/mrwaste)](https://pik-piam.r-universe.dev/builds)
 
 ## Purpose and Functionality
 
-Reads in waste data from What a Waste 2.0 and uses brms package to create future regressions based on GDP.
+Reads in waste data from What a Waste 2.0 and uses brms
+    package to create future regressions based on GDP.
 
 
 ## Installation
@@ -38,7 +39,7 @@ In case of questions / problems please contact David Meng-Chuen Chen <david.chen
 
 To cite package **mrwaste** in publications use:
 
-Chen D (2023). _mrwaste: Analysis and Projection of Municipal Solid Waste_. R package version 0.4.3.
+Chen D (2024). _mrwaste: Analysis and Projection of Municipal Solid Waste_. R package version 0.4.4.
 
 A BibTeX entry for LaTeX users is
 
@@ -46,7 +47,7 @@ A BibTeX entry for LaTeX users is
 @Manual{,
   title = {mrwaste: Analysis and Projection of Municipal Solid Waste},
   author = {David Meng-Chuen Chen},
-  year = {2023},
-  note = {R package version 0.4.3},
+  year = {2024},
+  note = {R package version 0.4.4},
 }
 ```
