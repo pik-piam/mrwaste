@@ -9,11 +9,12 @@ Description: Reads in waste data from What a Waste 2.0 and uses brms
     package to create future regressions based on GDP.
 License: LGPL-3
 Depends:
-    madrat(>= 1.30),
-    magclass(>= 3.17),
-    mrcommons,
-    R(>= 2.10.0)
+    R (>= 2.10.0),
+    madrat (>= 1.30),
+    magclass (>= 3.17),
+    mrcommons
 Imports:
+    SPEI,
     alabama,
     brms,
     dplyr,
@@ -23,7 +24,6 @@ Imports:
     readxl,
     rlang,
     rstan,
-    SPEI,
     tidyr,
     tidyselect,
     utils
